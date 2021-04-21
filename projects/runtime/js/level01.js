@@ -16,94 +16,140 @@ var level01 = function (window) {
             "number": 1, 
             "speed": -3,
             "gameItems": [
-                { "type": "sawblade", "x": 500, "y": groundY - 120},
-                { "type": "sawblade", "x": 800, "y": groundY - 120},
-                { "type": "sawblade", "x": 1000, "y": groundY - 30},
-                { "type": "reward", "x": 600, "y": groundY - 50},
-                { "type": "enemy", "x": 800, "y": groundY - 100},
+                { "type": "sawblade", "x": 1800, "y": groundY - 10},
+                { "type": "sawblade", "x": 400, "y": groundY + 10},
+                { "type": "sawblade", "x": 900, "y": groundY - 120},
+                { "type": "enemy", "x": 400, "y": groundY - 30},
+                { "type": "enemy", "x": 1000, "y": groundY - 30},
+                { "type": "enemy", "x": 1500, "y": groundY - 40},
+                { "type": "enemy", "x": 800, "y": groundY - 10},
+                { "type": "enemy", "x": 2000, "y": groundY - 10},
+                { "type": "enemy", "x": 1000, "y": groundY - 10},
+                { "type": "reward", "x": 500, "y": groundY - 150},
+                { "type": "reward", "x": 1500, "y": groundY - 150},
+                { "type": "reward", "x": 1800, "y": groundY - 150},
             ]
         };
+
+         for (var i = 0; i < levelData.gameItems.length; i++){
+                var gameItemObject = levelData.gameItems[i];
+                if (gameItemObject.type === 'sawblade'){
+                    createSawBlade(gameItemObject.x, gameItemObject.y);
+                } else if (gameItemObject.type === 'trap'){
+                    createTrap(gameItemObject.x, gameItemObject.y);
+                } else if (gameItemObject.type === 'enemy'){
+                    createEnemy(gameItemObject.x, gameItemObject.y)
+                } else {
+                    createReward(gameItemObject.x, gameItemObject.y)
+                }
+            }
         window.levelData = levelData;
         // set this to true or false depending on if you want to see hitzones
         game.setDebugMode(false);
 
         // TODO 6 and on go here
         // BEGIN EDITING YOUR CODE HERE
+        
         function createSawBlade(x, y){
             var hitZoneSize = 25;
             var damageFromObstacle = 10;
             var sawBladeHitZone = game.createObstacle(hitZoneSize, damageFromObstacle);
             sawBladeHitZone.x = x;
             sawBladeHitZone.y = y;
+
             game.addGameItem(sawBladeHitZone); 
+
             var obstacleImage = draw.bitmap('img/sawblade.png');
             sawBladeHitZone.addChild(obstacleImage);
             obstacleImage.x = -1 * hitZoneSize;
             obstacleImage.y = -1 * hitZoneSize;  
         }
 
-        for (var i = 0; i < levelData.gameItems.length; i++){
-            var gameItemObject = levelData.gameItems[i];
-            if (gameItemObject.type === 'sawblade'){
-                createSawBlade(gameItemObject.x, gameItemObject.y);
-            }
-            if (gameItemObject.type === 'reward'){
-                createReward(gameItemObject.x, gameItemObject.y);
-            }
-            if (gameItemObject.type === 'enemy'){
-                createEnemy(gameItemObject.x, gameItemObject.y);
-            }
-        }
-        
-
         function createEnemy(x, y){
-            var enemy = game.createGameItem('enemy',25);
-            var redSquare = draw.rect(50,50,'blue');
-            redSquare.x = -25;
-            redSquare.y = -25;
-            enemy.addChild(redSquare);
+            var obj = game.createGameItem('enemy',25);
+            var enemy = draw.bitmap('img/enemy.png');
+            enemy.x = -45;
+            enemy.y = -70;
+            enemy.scaleX = 1; 
+            enemy.scaleY = 1; 
+            obj.addChild(enemy);
 
-            enemy.x = x;
-            enemy.y = y;
+            obj.x = x;
+            obj.y = y;
 
-            game.addGameItem(enemy);
+            game.addGameItem(obj);
 
-            enemy.velocityX = -1;
+            obj.velocityX = -1;
 
-            enemy.rotationalVelocity = 10;
-
-            enemy.onPlayerCollision = function(){
-                console.log('The enemy has hit Halle');
+            obj.onPlayerCollision = function(){
+                console.log('The monster has hit Halle');
                 game.changeIntegrity(-10);
-                enemy.shrink();
+                obj.fadeOut();
             }
 
-            enemy.onProjectileCollision = function(){
-                console.log('Halle has hit the enemy');
+            obj.onProjectileCollision = function(){
+                console.log('Halle has hit the monster');
                 game.increaseScore(100);
-                enemy.shrink();
+                obj.shrink();
             }
         }
         
-        function createReward(x,y) {
-            var reward = game.createGameItem('reward',25);
-            var blueSphere = draw.sphere(50,50,'blue');
-            blueSphere.x = -25;
-            blueSphere.y = -25;
-            reward.addChild(blueSphere);
+        function createTrap(x,y) {
+            var traps = game.createGameItem('traps', 25);
+            var trap = draw.bitmap('img/traps.png')
+            trap.x = -40; 
+            trap.y = -40;
+            trap.scaleX = 0.04; 
+            trap.scaleY = 0.04;
+            traps.addChild(trap);
 
-            reward.x = x;
-            reward.y = y;
+            traps.x = x; 
+            traps.y = y; 
 
-            game.addGameItem(reward);
+            game.addGameItem(traps);
 
-            reward.onPlayerCollision = function(){
-                console.log('Halle has gathered the reward');
-                game.changeIntegrity(-10);
-                reward.fadeOut();
+            traps.velocityX = -1;
+
+            traps.onPlayerCollision = function(){
+                console.log('Halle was caught in the trap');
+                game.changeIntegrity(10);
+                traps.fadeOut();
+
+                
+            traps.onProjectileCollision = function(){
+                console.log('Halle has escaped the trap');
+                game.increaseScore(100);
+                trap.shrink();
+                }
             }
-
         }
+
+        function createReward(x,y) {
+            var rewards = game.createGameItem('reward', 25);
+            var reward = draw.bitmap('img/reward.png');
+            reward.x = -40;
+            reward.y = -40;
+            reward.scaleX = .5; 
+            reward.scaleY = .5;
+            rewards.addChild(reward);
+
+            rewards.x = x; 
+            rewards.y = y; 
+
+            game.addGameItem(rewards);
+
+            rewards.velocityX = -1;
+
+            rewards.onPlayerCollision = function(){
+                console.log('Halle has gathered the reward');
+                game.increaseScore(100);
+                rewards.fadeOut();
+            }
+        }
+
+        createReward(300, 300);
+
+           
         // DO NOT EDIT CODE BELOW HERE
     }
 };
