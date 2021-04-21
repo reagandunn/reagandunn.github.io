@@ -19,15 +19,15 @@ var level01 = function (window) {
                 { "type": "sawblade", "x": 1800, "y": groundY - 10},
                 { "type": "sawblade", "x": 400, "y": groundY + 10},
                 { "type": "sawblade", "x": 900, "y": groundY - 120},
-                { "type": "enemy", "x": 400, "y": groundY - 30},
-                { "type": "enemy", "x": 1000, "y": groundY - 30},
-                { "type": "enemy", "x": 1500, "y": groundY - 40},
-                { "type": "enemy", "x": 800, "y": groundY - 10},
-                { "type": "enemy", "x": 2000, "y": groundY - 10},
-                { "type": "enemy", "x": 1000, "y": groundY - 10},
-                { "type": "reward", "x": 500, "y": groundY - 150},
-                { "type": "reward", "x": 1500, "y": groundY - 150},
-                { "type": "reward", "x": 1800, "y": groundY - 150},
+                { "type": "enemy", "x": 600, "y": groundY - 30},
+                { "type": "enemy", "x": 1500, "y": groundY - 30},
+                { "type": "enemy", "x": 1700, "y": groundY - 40},
+                { "type": "enemy", "x": 800, "y": groundY - 30},
+                { "type": "enemy", "x": 2000, "y": groundY - 30},
+                { "type": "enemy", "x": 8000, "y": groundY - 40},
+                { "type": "reward", "x": 800, "y": groundY - 30},
+                { "type": "reward", "x": 200, "y": groundY - 30},
+                { "type": "reward", "x": 400, "y": groundY - 30},
             ]
         };
 
@@ -95,25 +95,25 @@ var level01 = function (window) {
         }
         
         function createTrap(x,y) {
-            var traps = game.createGameItem('traps', 25);
+            var obje = game.createGameItem('traps', 25);
             var trap = draw.bitmap('img/traps.png')
             trap.x = -40; 
             trap.y = -40;
             trap.scaleX = 0.04; 
             trap.scaleY = 0.04;
-            traps.addChild(trap);
+            obje.addChild(trap);
 
-            traps.x = x; 
-            traps.y = y; 
+            obje.x = x; 
+            obje.y = y; 
 
-            game.addGameItem(traps);
+            game.addGameItem(obje);
 
-            traps.velocityX = -1;
+            obje.velocityX = -1;
 
-            traps.onPlayerCollision = function(){
+            obje.onPlayerCollision = function(){
                 console.log('Halle was caught in the trap');
                 game.changeIntegrity(10);
-                traps.fadeOut();
+                obje.fadeOut();
 
                 
             traps.onProjectileCollision = function(){
@@ -146,8 +146,6 @@ var level01 = function (window) {
                 rewards.fadeOut();
             }
         }
-
-        createReward(300, 300);
 
            
         // DO NOT EDIT CODE BELOW HERE
