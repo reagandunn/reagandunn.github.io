@@ -28,6 +28,7 @@ var level01 = function (window) {
                 { "type": "reward", "x": 800, "y": groundY - 30},
                 { "type": "reward", "x": 200, "y": groundY - 30},
                 { "type": "reward", "x": 400, "y": groundY - 30},
+                { "type": "trap", "x": 900, "y": groundY - 30},
             ]
         };
 
@@ -116,7 +117,7 @@ var level01 = function (window) {
                 obje.fadeOut();
 
                 
-            traps.onProjectileCollision = function(){
+            obje.onProjectileCollision = function(){
                 console.log('Halle has escaped the trap');
                 game.increaseScore(100);
                 trap.shrink();
@@ -125,25 +126,25 @@ var level01 = function (window) {
         }
 
         function createReward(x,y) {
-            var rewards = game.createGameItem('reward', 25);
+            var ob = game.createGameItem('reward', 25);
             var reward = draw.bitmap('img/reward.png');
             reward.x = -40;
             reward.y = -40;
             reward.scaleX = .5; 
             reward.scaleY = .5;
-            rewards.addChild(reward);
+            ob.addChild(reward);
 
-            rewards.x = x; 
-            rewards.y = y; 
+            ob.x = x; 
+            ob.y = y; 
 
-            game.addGameItem(rewards);
+            game.addGameItem(ob);
 
-            rewards.velocityX = -1;
+            ob.velocityX = -1;
 
-            rewards.onPlayerCollision = function(){
+            ob.onPlayerCollision = function(){
                 console.log('Halle has gathered the reward');
                 game.increaseScore(100);
-                rewards.fadeOut();
+                ob.fadeOut();
             }
         }
 
